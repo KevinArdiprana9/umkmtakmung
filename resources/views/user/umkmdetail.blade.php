@@ -14,24 +14,23 @@
 @else
 <div class="min-h-screen bg-gray-50">
 
-    <!-- wrapper absolute dipindah ke dalam container -->
     <div class="relative">
         <div class="h-96 overflow-hidden relative">
-            <img src="{{ $umkm['image'] }}" alt="{{ $umkm['name'] }}" class="w-full h-full object-cover" />
+            <img src="{{ $umkm->image }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
             <div class="absolute bottom-0 left-0 right-0 p-8">
                 <div class="max-w-4xl mx-auto text-white">
                     <div class="flex items-center mb-4">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white">
-                            {{ $umkm['category'] }}
+                            {{ $umkm->category }}
                         </span>
                         <div class="flex items-center ml-4">
-                            📍 {{ $umkm['location'] }}
+                            📍 {{ $umkm->location }}
                         </div>
                     </div>
-                    <h1 class="text-4xl md:text-5xl font-bold mb-2">{{ $umkm['name'] }}</h1>
-                    <p class="text-xl text-white/90">{{ $umkm['description'] }}</p>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-2">{{ $umkm->name }}</h1>
+                    <p class="text-xl text-white/90">{{ $umkm->description }}</p>
                 </div>
             </div>
         </div>
@@ -43,42 +42,87 @@
         <!-- Left Section -->
         <div class="lg:col-span-2">
             <div class="grid md:grid-cols-3 gap-6 mb-8">
-                <!-- (sudah sesuai, tidak perlu ubah) -->
-                ...
+                <!-- Jam Operasional -->
+                <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
+                    <div class="text-red-600 text-2xl mb-2">⏰</div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Jam Operasional</h4>
+                    <p class="text-gray-800 text-sm">{{ $umkm->operating_hours }}</p>
+                </div>
+
+                <!-- Tim -->
+                <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
+                    <div class="text-red-600 text-2xl mb-2">👥</div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Tim</h4>
+                    <p class="text-gray-800 text-sm">{{ $umkm->employees }} Karyawan</p>
+                </div>
+
+                <!-- Berdiri -->
+                <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
+                    <div class="text-red-600 text-2xl mb-2">🏅</div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Berdiri</h4>
+                    <p class="text-gray-800 text-sm">Tahun {{ $umkm->established }}</p>
+                </div>
             </div>
 
             <!-- Tentang Usaha -->
             <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 mb-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Tentang Usaha</h2>
                 <div class="prose prose-gray max-w-none">
-                    {!! nl2br(e($umkm['fullDescription'])) !!}
+                    {!! nl2br(e($umkm->full_description)) !!}
                 </div>
             </div>
 
             <!-- Produk Unggulan -->
             <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6">Produk Unggulan</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Keunggulan UMKM</h2>
                 <ul class="grid md:grid-cols-2 gap-3">
-                    @foreach ($umkm['specialties'] as $item)
+                    @foreach ($umkm->specialties->pluck('name') as $item)
                     <li class="flex items-center p-3 bg-red-50 rounded-lg">⭐ {{ $item }}</li>
                     @endforeach
                 </ul>
             </div>
 
             <!-- Galeri -->
-            <div class="grid md:grid-cols-3 gap-4">
-                @foreach ($umkm['gallery'] as $img)
-                <div class="aspect-w-4 aspect-h-3 overflow-hidden rounded-lg">
-                    <img src="{{ $img }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            <div x-data="{ show: false, imgSrc: '' }" class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">Galeri</h2>
+                <div class="grid md:grid-cols-3 gap-4">
+                    @foreach ($umkm->galleries->pluck('image_url') as $img)
+                    <div class="aspect-w-5 aspect-h-4 overflow-hidden rounded-lg cursor-pointer" @click="show = true; imgSrc = '{{ $img }}'">
+                        <img src="{{ $img }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                    </div>
+                    @endforeach
                 </div>
-                @endforeach
+
+                <!-- Modal Preview Gambar -->
+                <div
+                    x-show="show"
+                    x-transition
+                    class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center px-4"
+                    style="backdrop-filter: blur(4px);">
+                    <div class="bg-white rounded-lg overflow-hidden max-w-2xl w-full">
+                        <!-- Gambar -->
+                        <div class="w-full max-h-[80vh] overflow-hidden flex items-center justify-center p-4">
+                            <img
+                                :src="imgSrc"
+                                alt="Preview"
+                                class="max-w-full max-h-[70vh] object-contain rounded" />
+                        </div>
+
+                        <!-- Tombol Tutup -->
+                        <div class="bg-gray-100 text-center p-4 border-t">
+                            <button @click="show = false" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                                Tutup Gambar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Penghargaan & Sertifikasi -->
             <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Penghargaan & Sertifikasi</h2>
                 <ul class="space-y-2">
-                    @foreach ($umkm['achievements'] as $ach)
+                    @foreach ($umkm->achievements->pluck('title') as $ach)
                     <li class="flex items-center bg-red-50 border-l-4 border-red-600 px-4 py-2 rounded">
                         🏅 {{ $ach }}
                     </li>
@@ -92,8 +136,8 @@
             <div class="bg-white rounded-lg p-6 shadow-sm border mb-6">
                 <h3 class="text-xl font-bold mb-6">Informasi Kontak</h3>
                 <ul class="space-y-4 text-sm text-gray-700">
-                    <li><strong>Alamat:</strong> {{ $umkm['address'] }}
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($umkm['address']) }}"
+                    <li><strong>Alamat:</strong> {{ $umkm->address }}
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($umkm->address) }}"
                             target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                             📍 Lihat di Google Maps
                         </a>
@@ -102,25 +146,19 @@
                             style="border:0; border-radius: 0.5rem"
                             loading="lazy" allowfullscreen
                             referrerpolicy="no-referrer-when-downgrade"
-                            src="https://www.google.com/maps?q={{ urlencode($umkm['address']) }}&output=embed">
+                            src="https://www.google.com/maps?q={{ urlencode($umkm->address) }}&output=embed">
                         </iframe>
 
                     </li>
                     <li>
                         <strong>Telepon:</strong>
-                        <p class="text-gray-800 text-sm mb-1">{{ $umkm['phone'] }}</p>
-                        <a href="https://wa.me/{{ str_replace('+', '', $umkm['phone']) }}" target="_blank"
+                        <p class="text-gray-800 text-sm mb-1">{{ $umkm->phone }}</p>
+                        <a href="https://wa.me/{{ str_replace('+', '', $umkm->phone) }}" target="_blank"
                             class="text-green-600 hover:text-green-700 text-sm font-medium">
                             💬 Chat via WhatsApp
                         </a>
                     </li>
-                    <li><strong>Pemilik:</strong> {{ $umkm['owner'] }}</li>
-                    <li>
-                        <strong>Jam Operasional:</strong>
-                        <p class="text-gray-800 text-sm mt-1">
-                            {{ $umkm['operatingHours'] }}
-                        </p>
-                    </li>
+                    <li><strong>Pemilik:</strong> {{ $umkm->owner }}</li>
 
 
                 </ul>

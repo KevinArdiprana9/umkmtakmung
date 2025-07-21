@@ -82,15 +82,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach ($umkmList as $umkm)
             <div class="bg-white border rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden group">
-                <img src="{{ $umkm['image'] }}" alt="{{ $umkm['name'] }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                <img src="{{ $umkm->image }}" alt="{{ $umkm->name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                 <div class="p-6">
                     <div class="flex justify-between mb-3 text-sm">
                         <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">{{ $umkm['category'] }}</span>
-                        <span class="text-gray-500">📍 {{ $umkm['location'] }}</span>
+                        <span class="text-gray-500">📍 {{ $umkm->location }}</span>
                     </div>
                     <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">{{ $umkm['name'] }}</h3>
                     <p class="text-gray-600 mb-4">{{ \Illuminate\Support\Str::limit($umkm['description'], 120) }}</p>
-                    <a href="{{ url('/umkm/' . $umkm['id']) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                    <a href="{{ url('/umkm/' . $umkm->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
                         Lihat Detail
                     </a>
                 </div>
