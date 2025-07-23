@@ -34,6 +34,10 @@
                         {{ $item }}
                     </a>
                     @endforeach
+                    <a href="{{ url('/login') }}"
+                        class="ml-4 inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm font-medium transition">
+                        Login
+                    </a>
                 </div>
                 <div class="md:hidden">
                     <button onclick="toggleMenu()" class="text-gray-600 hover:text-red-600 p-2 rounded-md">
@@ -49,6 +53,10 @@
                 {{ $item }}
             </a>
             @endforeach
+            <a href="{{ url('/login') }}"
+                class="block text-red-600 hover:text-red-700 text-sm font-medium">
+                Login
+            </a>
         </div>
     </nav>
 
