@@ -56,7 +56,7 @@ class UMKMController extends Controller
 
     public function create()
     {
-        return view('admin.tambah');
+        return view('admin.upsert');
     }
 
     public function store(Request $request)
@@ -69,7 +69,8 @@ class UMKMController extends Controller
             'location' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'operating_hours' => 'required',
+            'operating_start' => 'required|date_format:H:i',
+            'operating_end' => 'required|date_format:H:i',
             'established' => 'required',
             'employees' => 'required|integer',
             'image_file' => 'nullable|image|max:2048',
@@ -93,7 +94,7 @@ class UMKMController extends Controller
             'phone' => $request->phone,
             'email' => $request->email,
             'owner' => $request->owner,
-            'operating_hours' => $request->operating_hours,
+            'operating_hours' => $request->operating_start . ' - ' . $request->operating_end,
             'established' => $request->established,
             'employees' => $request->employees,
         ]);
@@ -127,5 +128,113 @@ class UMKMController extends Controller
         }
 
         return redirect('/admin')->with('success', 'UMKM berhasil ditambahkan');
+    }
+
+    public function edit($id)
+    {
+        $umkm = Umkm::with(['galleries', 'specialties', 'achievements'])->findOrFail($id);
+
+        // Pecah jam operasional jadi 2 input
+        if ($umkm->operating_hours) {
+            [$start, $end] = explode(' - ', $umkm->operating_hours);
+            $umkm->operating_start = trim((string) $start);
+            $umkm->operating_end = trim((string) $end);
+        }
+
+        $umkm->specialties_string = $umkm->specialties->pluck('name')->implode(', ');
+        $umkm->achievements_string = $umkm->achievements->pluck('title')->implode(', ');
+
+        return view('admin.upsert', compact('umkm'));
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'category' => 'required',
+            'description' => 'required',
+            'full_description' => 'required',
+            'location' => 'required',
+            'address' => 'required',
+            'phone' => 'required',
+            'operating_start' => 'required',
+            'operating_end' => 'required',
+            'established' => 'required',
+            'employees' => 'required|integer',
+            'image_file' => 'nullable|image|max:2048',
+            'gallery.*' => 'nullable|image|max:2048',
+        ]);
+
+        $umkm = Umkm::with(['specialties', 'achievements', 'galleries'])->findOrFail($id);
+
+        // Update image utama jika ada
+        if ($request->hasFile('image_file')) {
+            // Hapus foto lama jika ada
+            if ($umkm->image && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->image))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->image));
+            }
+
+            $imagePath = $request->file('image_file')->store('umkm/images', 'public');
+            $umkm->image = '/storage/' . $imagePath;
+        }
+
+        // Update data utama
+        $umkm->update([
+            'name' => $request->name,
+            'category' => $request->category,
+            'description' => $request->description,
+            'full_description' => $request->full_description,
+            'location' => $request->location,
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'owner' => $request->owner,
+            'operating_hours' => $request->operating_start . ' - ' . $request->operating_end,
+            'established' => $request->established,
+            'employees' => $request->employees,
+        ]);
+
+        // Update specialties (hapus & insert ulang)
+        $umkm->specialties()->delete();
+        if ($request->filled('specialties')) {
+            foreach (explode(',', $request->specialties) as $item) {
+                $umkm->specialties()->create([
+                    'name' => trim($item),
+                ]);
+            }
+        }
+
+        // Update achievements (hapus & insert ulang)
+        $umkm->achievements()->delete();
+        if ($request->filled('achievements')) {
+            foreach (explode(',', $request->achievements) as $item) {
+                $umkm->achievements()->create([
+                    'title' => trim($item),
+                ]);
+            }
+        }
+
+        // Tambah galeri baru jika ada (tidak menghapus lama)
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $img) {
+                $path = $img->store('umkm/gallery', 'public');
+                $umkm->galleries()->create([
+                    'image_url' => '/storage/' . $path,
+                ]);
+            }
+        }
+
+        if ($request->has('hapus_gambar')) {
+            foreach ($request->hapus_gambar as $idGambar) {
+                $galeri = UmkmGallery::find($idGambar);
+                if ($galeri) {
+                    Storage::delete(str_replace('/storage/', 'public/', $galeri->image_url));
+                    $galeri->delete();
+                }
+            }
+        }
+
+        return redirect('/admin')->with('success', 'UMKM berhasil diperbarui.');
     }
 }

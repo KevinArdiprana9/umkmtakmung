@@ -55,10 +55,11 @@
                         <p class="text-sm text-gray-600 mt-2">
                             {{ \Illuminate\Support\Str::limit($umkm->description, 80) }}
                         </p>
-                        <div class="mt-4 flex justify-between">
-                            <a href="{{ url('/umkm/' . $umkm->id) }}"
-                                class="text-sm text-blue-600 hover:underline">Lihat</a>
-                            {{-- Bisa tambahkan tombol edit/hapus di sini jika diperlukan --}}
+                        <div class="mt-4 flex justify-end">
+                            <a href="{{ url('/admin/umkm/edit/' . $umkm->id) }}"
+                                class="text-sm text-yellow-600 hover:underline font-medium">
+                                Edit
+                            </a>
                         </div>
                     </div>
                 </div>

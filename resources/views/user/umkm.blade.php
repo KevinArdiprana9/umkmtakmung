@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>UMKM Desa Takmung</title>
     @vite('resources/css/app.css')
-    <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
     <script>
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');

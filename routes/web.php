@@ -17,6 +17,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/umkm/tambah', [UMKMController::class, 'create']);
     Route::post('/admin/umkm/tambah', [UMKMController::class, 'store']);
+    Route::get('/admin/umkm/edit/{id}', [UmkmController::class, 'edit']);
+    Route::post('/admin/umkm/update/{id}', [UmkmController::class, 'update']);
 });
 
 Route::get('/umkm', [UMKMController::class, 'index']);

@@ -46,7 +46,7 @@
                 <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
                     <div class="text-red-600 text-2xl mb-2">⏰</div>
                     <h4 class="text-sm font-semibold text-gray-700 mb-1">Jam Operasional</h4>
-                    <p class="text-gray-800 text-sm">{{ $umkm->operating_hours }}</p>
+                    <p class="text-gray-800 text-sm">{{ $umkm->operating_hours }} WITA</p>
                 </div>
 
                 <!-- Tim -->
@@ -73,6 +73,7 @@
             </div>
 
             <!-- Produk Unggulan -->
+            @if ($umkm->specialties->isNotEmpty())
             <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 mb-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Keunggulan UMKM</h2>
                 <ul class="grid md:grid-cols-2 gap-3">
@@ -81,6 +82,7 @@
                     @endforeach
                 </ul>
             </div>
+            @endif
 
             <!-- Galeri -->
             <div x-data="{ show: false, imgSrc: '' }" class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 mb-8">
@@ -96,6 +98,7 @@
                 <!-- Modal Preview Gambar -->
                 <div
                     x-show="show"
+                    x-cloak
                     x-transition
                     class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center px-4"
                     style="backdrop-filter: blur(4px);">
@@ -119,6 +122,7 @@
             </div>
 
             <!-- Penghargaan & Sertifikasi -->
+            @if ($umkm->achievements->isNotEmpty())
             <div class="bg-white rounded-lg p-8 shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Penghargaan & Sertifikasi</h2>
                 <ul class="space-y-2">
@@ -129,6 +133,7 @@
                     @endforeach
                 </ul>
             </div>
+            @endif
         </div>
 
         <!-- Sidebar -->
@@ -137,6 +142,7 @@
                 <h3 class="text-xl font-bold mb-6">Informasi Kontak</h3>
                 <ul class="space-y-4 text-sm text-gray-700">
                     <li><strong>Alamat:</strong> {{ $umkm->address }}
+                        <p></p>
                         <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($umkm->address) }}"
                             target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                             📍 Lihat di Google Maps
@@ -169,19 +175,12 @@
         </div>
     </div>
     <footer class="bg-gray-800 text-white">
-        <div class="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
+        <div class="max-w-7xl mx-auto px-4 py-12 flex flex-col md:flex-row justify-between gap-8">
             <div>
                 <h4 class="font-bold text-lg mb-2">UMKM Desa Takmung</h4>
-                <p class="text-gray-300">Mendukung usaha lokal dan memajukan perekonomian masyarakat Desa Takmung.</p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-lg mb-2">Tautan Cepat</h4>
-                <ul class="text-gray-300 space-y-1">
-                    <li><a href="#" class="hover:text-red-400">Profil Desa</a></li>
-                    <li><a href="#" class="hover:text-red-400">Pemerintahan</a></li>
-                    <li><a href="#" class="hover:text-red-400">Peraturan</a></li>
-                    <li><a href="#" class="hover:text-red-400">Hubungi Kami</a></li>
-                </ul>
+                <p class="text-gray-300 max-w-2xl text-justify">
+                    Website ini merupakan platform resmi yang bertujuan untuk mendukung dan mempromosikan usaha mikro, kecil, dan menengah (UMKM) yang berasal dari Desa Takmung. Dengan menyediakan informasi lengkap mengenai produk, layanan, serta profil para pelaku UMKM lokal, kami berkomitmen untuk mendorong pertumbuhan ekonomi desa, memperluas jangkauan pasar, serta membangun kesadaran masyarakat akan pentingnya mendukung produk-produk lokal berkualitas.
+                </p>
             </div>
             <div>
                 <h4 class="font-semibold text-lg mb-2">Kontak</h4>
