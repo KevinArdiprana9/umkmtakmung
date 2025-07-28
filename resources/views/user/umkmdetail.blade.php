@@ -5,7 +5,7 @@
 <div class="min-h-screen bg-gray-50 flex items-center justify-center">
     <div class="text-center">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">UMKM tidak ditemukan</h2>
-        <a href="/umkm"
+        <a href="/"
             class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
             ← Kembali ke Beranda
         </a>
@@ -36,10 +36,7 @@
         </div>
     </div>
 
-
-    <!-- Main Content -->
     <div class="max-w-4xl mx-auto px-4 py-12 grid lg:grid-cols-3 gap-12">
-        <!-- Left Section -->
         <div class="lg:col-span-2">
             <div class="grid md:grid-cols-3 gap-6 mb-8">
                 <!-- Jam Operasional -->
@@ -164,11 +161,17 @@
                             💬 Chat via WhatsApp
                         </a>
                     </li>
-                    <li><strong>Pemilik:</strong> {{ $umkm->owner }}</li>
+                    <li>
+                        <strong class="text-gray-800 text-sm mb-2">Pemilik: </strong> {{ $umkm->owner }}
 
-
+                        @if ($umkm->owner_photo)
+                        <img src="{{ $umkm->owner_photo }}"
+                            alt="Foto Pemilik"
+                            class="w-32 h-32 object-cover rounded-lg border shadow mt-4">
+                        @endif
+                    </li>
                 </ul>
-                <a href="/umkm" class="block mt-6 w-full bg-red-600 hover:bg-red-700 text-white py-2 text-center rounded-lg">
+                <a href="/" class="block mt-6 w-full bg-red-600 hover:bg-red-700 text-white py-2 text-center rounded-lg">
                     ← Kembali ke Daftar UMKM
                 </a>
             </div>

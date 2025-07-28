@@ -40,7 +40,7 @@ class UMKMController extends Controller
             ->find($id);
 
         if (!$umkm) {
-            return view('umkmdetail-notfound');
+            return view('user.umkmdetail-notfound');
         }
 
         return view('user.umkmdetail', [
@@ -50,7 +50,7 @@ class UMKMController extends Controller
 
     public function adminDashboard()
     {
-        $umkmList = Umkm::latest()->get(); // atau pakai paginate() jika perlu
+        $umkmList = Umkm::latest()->get();
         return view('admin.dashboard', compact('umkmList'));
     }
 
@@ -74,13 +74,18 @@ class UMKMController extends Controller
             'established' => 'required',
             'employees' => 'required|integer',
             'image_file' => 'nullable|image|max:2048',
+            'owner_photo_file' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'gallery.*' => 'nullable|image|max:2048',
         ]);
 
-        // Simpan foto utama
         $imagePath = null;
         if ($request->hasFile('image_file')) {
             $imagePath = $request->file('image_file')->store('umkm/images', 'public');
+        }
+        $ownerPhotoPath = null;
+        if ($request->hasFile('owner_photo_file')) {
+            $file = $request->file('owner_photo_file');
+            $ownerPhotoPath = $file->store('umkm/owner_photos', 'public');
         }
 
         $umkm = Umkm::create([
@@ -94,12 +99,12 @@ class UMKMController extends Controller
             'phone' => $request->phone,
             'email' => $request->email,
             'owner' => $request->owner,
+            'owner_photo' => $ownerPhotoPath,
             'operating_hours' => $request->operating_start . ' - ' . $request->operating_end,
             'established' => $request->established,
             'employees' => $request->employees,
         ]);
 
-        // Simpan Galeri
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $img) {
                 $path = $img->store('umkm/gallery', 'public');
@@ -109,7 +114,6 @@ class UMKMController extends Controller
             }
         }
 
-        // Simpan Produk Unggulan
         if ($request->filled('specialties')) {
             foreach (explode(',', $request->specialties) as $item) {
                 $umkm->specialties()->create([
@@ -118,7 +122,6 @@ class UMKMController extends Controller
             }
         }
 
-        // Simpan Penghargaan
         if ($request->filled('achievements')) {
             foreach (explode(',', $request->achievements) as $ach) {
                 $umkm->achievements()->create([
@@ -134,7 +137,6 @@ class UMKMController extends Controller
     {
         $umkm = Umkm::with(['galleries', 'specialties', 'achievements'])->findOrFail($id);
 
-        // Pecah jam operasional jadi 2 input
         if ($umkm->operating_hours) {
             [$start, $end] = explode(' - ', $umkm->operating_hours);
             $umkm->operating_start = trim((string) $start);
@@ -163,6 +165,7 @@ class UMKMController extends Controller
             'established' => 'required',
             'employees' => 'required|integer',
             'image_file' => 'nullable|image|max:2048',
+            'owner_photo_file' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'gallery.*' => 'nullable|image|max:2048',
         ]);
 
@@ -179,7 +182,22 @@ class UMKMController extends Controller
             $umkm->image = '/storage/' . $imagePath;
         }
 
-        // Update data utama
+        if ($request->filled('hapus_owner_photo') && $request->hapus_owner_photo == '1') {
+            if ($umkm->owner_photo) {
+                Storage::delete(str_replace('/storage/', 'public/', $umkm->owner_photo));
+                $umkm->owner_photo = null;
+            }
+        }
+
+        if ($request->hasFile('owner_photo_file')) {
+            if ($umkm->owner_photo && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->owner_photo))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->owner_photo));
+            }
+
+            $ownerPhotoPath = $request->file('owner_photo_file')->store('umkm/owner_photos', 'public');
+            $umkm->owner_photo = '/storage/' . $ownerPhotoPath;
+        }
+
         $umkm->update([
             'name' => $request->name,
             'category' => $request->category,
@@ -195,7 +213,6 @@ class UMKMController extends Controller
             'employees' => $request->employees,
         ]);
 
-        // Update specialties (hapus & insert ulang)
         $umkm->specialties()->delete();
         if ($request->filled('specialties')) {
             foreach (explode(',', $request->specialties) as $item) {
@@ -205,7 +222,6 @@ class UMKMController extends Controller
             }
         }
 
-        // Update achievements (hapus & insert ulang)
         $umkm->achievements()->delete();
         if ($request->filled('achievements')) {
             foreach (explode(',', $request->achievements) as $item) {
@@ -215,7 +231,6 @@ class UMKMController extends Controller
             }
         }
 
-        // Tambah galeri baru jika ada (tidak menghapus lama)
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $img) {
                 $path = $img->store('umkm/gallery', 'public');
@@ -236,5 +251,32 @@ class UMKMController extends Controller
         }
 
         return redirect('/admin')->with('success', 'UMKM berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $umkm = Umkm::with(['galleries', 'achievements', 'specialties'])->findOrFail($id);
+
+        if ($umkm->image && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->image))) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->image));
+        }
+
+        if ($umkm->owner_photo && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->owner_photo))) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->owner_photo));
+        }
+
+        foreach ($umkm->galleries as $galeri) {
+            if ($galeri->image_url && Storage::disk('public')->exists(str_replace('/storage/', '', $galeri->image_url))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $galeri->image_url));
+            }
+            $galeri->delete();
+        }
+
+        $umkm->achievements()->delete();
+        $umkm->specialties()->delete();
+
+        $umkm->delete();
+
+        return redirect('/admin')->with('success', 'UMKM berhasil dihapus.');
     }
 }

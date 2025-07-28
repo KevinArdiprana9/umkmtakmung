@@ -35,7 +35,7 @@
                     <label class="block font-medium mb-1">Kategori</label>
                     <select name="category" class="w-full border p-2 rounded" required>
                         <option value="" disabled {{ isset($umkm) ? '' : 'selected' }}>Pilih kategori UMKM</option>
-                        @foreach (["Kuliner", "Kerajinan Tangan", "Fashion", "Pertanian", "Peternakan", "Perikanan", "Jasa", "Lainnya"] as $cat)
+                        @foreach (["Makanan & Minuman", "Kerajinan Tangan", "Fashion", "Pertanian", "Peternakan", "Perikanan", "Jasa", "Lainnya"] as $cat)
                         <option value="{{ $cat }}" {{ old('category', $umkm->category ?? '') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                         @endforeach
                     </select>
@@ -107,11 +107,41 @@
                     <input type="number" name="employees" class="w-full border p-2 rounded" required value="{{ old('employees', $umkm->employees ?? '') }}">
                 </div>
                 <div class="md:col-span-2">
+                    <label class="block font-medium mb-1">Foto Pemilik Usaha</label>
+                    <div class="relative border-2 border-dashed border-gray-300 p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m5 4v4m0 0h4m-4 0H9" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-600">Klik atau tarik gambar ke sini untuk unggah</p>
+                        <input type="file" name="owner_photo_file" accept="image/*"
+                            class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                            onchange="previewOwnerPhoto(event)">
+                    </div>
+
+                    <div class="mt-4 {{ isset($umkm) && $umkm->owner_photo ? '' : 'hidden' }}" id="owner-photo-preview-wrapper">
+                        <p class="text-sm text-gray-500 mb-1">Preview:</p>
+
+                        <div class="relative w-64" id="owner-photo-container">
+                            <img id="owner-photo-preview"
+                                src="{{ isset($umkm) && $umkm->owner_photo ? $umkm->owner_photo : '#' }}"
+                                alt="Preview Foto Pemilik"
+                                class="w-64 h-48 object-cover rounded-lg border">
+
+                            <button type="button"
+                                class="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700"
+                                onclick="hapusFotoOwner()">
+                                ❌
+                            </button>
+
+                            <input type="hidden" name="hapus_owner_photo" id="hapus_owner_photo" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-2">
                     <label class="block font-medium mb-1">
                         Galeri Foto <span class="text-sm text-gray-500">(bisa pilih lebih dari 1)</span>
                     </label>
 
-                    <!-- Upload area -->
                     <div
                         class="relative border-2 border-dashed border-gray-400 p-6 rounded-lg bg-gray-50 text-center hover:bg-gray-100 transition-all cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -123,10 +153,8 @@
                             onchange="previewGallery(event)">
                     </div>
 
-                    <!-- Preview: Gambar Baru -->
                     <div id="gallery-preview" class="mt-4 grid grid-cols-3 gap-3"></div>
 
-                    <!-- Preview: Gambar Lama (dengan tombol hapus) -->
                     @if (!empty($umkm->galleries))
                     <span class="text-sm text-gray-600">Gambar Lama</span>
                     <div id="existing-gallery" class="mt-4 grid grid-cols-3 gap-3">
@@ -173,6 +201,20 @@
             }
         }
 
+        function previewOwnerPhoto(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('owner-photo-preview');
+            const wrapper = document.getElementById('owner-photo-preview-wrapper');
+
+            if (file && file.type.startsWith('image/')) {
+                preview.src = URL.createObjectURL(file);
+                wrapper.style.display = 'block';
+            } else {
+                preview.src = '#';
+                wrapper.style.display = 'none';
+            }
+        }
+
         function previewGallery(event) {
             const files = event.target.files;
             const container = document.getElementById('gallery-preview');
@@ -194,7 +236,6 @@
         }
 
         function hapusGambarLama(id, button) {
-            // Tambahkan input hidden ke form
             const wrapper = document.getElementById('hapus-gambar-wrapper');
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -202,8 +243,16 @@
             input.value = id;
             wrapper.appendChild(input);
 
-            // Sembunyikan elemen gambar
             button.parentElement.remove();
+        }
+
+        function hapusFotoOwner() {
+            document.getElementById('hapus_owner_photo').value = '1';
+
+            const container = document.getElementById('owner-photo-container');
+            if (container) {
+                container.style.display = 'none';
+            }
         }
 
         flatpickr("#operating_start", {

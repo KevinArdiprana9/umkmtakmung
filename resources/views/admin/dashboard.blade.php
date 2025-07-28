@@ -10,7 +10,6 @@
 
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
         <aside class="w-64 bg-white shadow-lg flex flex-col justify-between">
             <div>
                 <div class="px-6 py-4 border-b border-gray-200">
@@ -33,7 +32,6 @@
             </form>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 p-8 bg-gray-50">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-semibold text-gray-800">Daftar UMKM</h2>
@@ -55,11 +53,25 @@
                         <p class="text-sm text-gray-600 mt-2">
                             {{ \Illuminate\Support\Str::limit($umkm->description, 80) }}
                         </p>
-                        <div class="mt-4 flex justify-end">
+                        <div class="mt-4 flex justify-end gap-4">
                             <a href="{{ url('/admin/umkm/edit/' . $umkm->id) }}"
                                 class="text-sm text-yellow-600 hover:underline font-medium">
                                 Edit
                             </a>
+
+                            <button type="button"
+                                onclick="confirmHapusUMKM('{{ $umkm->id }}', '{{ $umkm->name }}')"
+                                class="text-sm text-red-600 hover:underline font-medium">
+                                Hapus
+                            </button>
+
+                            <form id="form-delete-umkm-{{ $umkm->id }}"
+                                action="{{ route('umkm.destroy', $umkm->id) }}"
+                                method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -73,5 +85,12 @@
         </main>
     </div>
 </body>
+<script>
+    function confirmHapusUMKM(id, name) {
+        if (confirm(`Yakin ingin menghapus UMKM "${name}"?`)) {
+            document.getElementById(`form-delete-umkm-${id}`).submit();
+        }
+    }
+</script>
 
 </html>

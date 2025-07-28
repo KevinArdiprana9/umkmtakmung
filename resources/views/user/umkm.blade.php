@@ -16,23 +16,13 @@
 
 <body class="bg-gray-50 text-gray-900">
 
-    <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path d="M3 3h18v18H3z" />
-                    </svg>
                     <span class="ml-2 text-xl font-bold text-gray-900">UMKM Desa Takmung</span>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
-                    @foreach (['Beranda', 'Profil Desa', 'Pemerintahan', 'UMKM', 'Peraturan', 'Peta'] as $item)
-                    <a href="#" class="text-gray-600 hover:text-red-600 px-3 py-2 text-sm font-medium transition">
-                        {{ $item }}
-                    </a>
-                    @endforeach
                     <a href="{{ url('/login') }}"
                         class="ml-4 inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm font-medium transition">
                         Login
@@ -45,13 +35,7 @@
                 </div>
             </div>
         </div>
-        <!-- Mobile Nav -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-3 space-y-2">
-            @foreach (['Beranda', 'Profil Desa', 'Pemerintahan', 'UMKM', 'Peraturan', 'Peta'] as $item)
-            <a href="#" class="block text-gray-600 hover:text-red-600 text-sm font-medium">
-                {{ $item }}
-            </a>
-            @endforeach
             <a href="{{ url('/login') }}"
                 class="block text-red-600 hover:text-red-700 text-sm font-medium">
                 Login
@@ -59,15 +43,13 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <header class="bg-gradient-to-r from-red-600 to-red-700 text-white text-center py-16 px-4">
         <h1 class="text-4xl font-bold mb-4">Potensi UMKM Desa Takmung</h1>
         <p class="text-lg max-w-3xl mx-auto text-red-100">Temukan kekayaan usaha mikro, kecil, dan menengah yang menjadi tulang punggung ekonomi masyarakat Desa Takmung</p>
     </header>
 
-    <!-- Search -->
     <div class="max-w-7xl mx-auto px-4 py-8">
-        <form method="GET" action="{{ url('/umkm') }}">
+        <form method="GET" action="{{ url('/') }}">
             <div class="relative max-w-2xl mx-auto">
                 <input type="text" name="search" value="{{ $search }}" placeholder="Cari usaha, kategori, atau produk..."
                     class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 text-lg">
@@ -78,7 +60,6 @@
         </form>
     </div>
 
-    <!-- UMKM List -->
     <div class="max-w-7xl mx-auto px-4 pb-16">
         <div class="mb-8">
             <h2 class="text-3xl font-bold mb-2">Usaha Lokal</h2>
@@ -97,7 +78,7 @@
                     </div>
                     <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">{{ $umkm['name'] }}</h3>
                     <p class="text-gray-600 mb-4">{{ \Illuminate\Support\Str::limit($umkm['description'], 120) }}</p>
-                    <a href="{{ url('/umkm/' . $umkm->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                    <a href="{{ url('/' . $umkm->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
                         Lihat Detail
                     </a>
                 </div>
@@ -113,26 +94,17 @@
         @endif
     </div>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white">
-        <div class="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
+        <div class="max-w-7xl mx-auto px-4 py-12 flex flex-col md:flex-row justify-between gap-8">
             <div>
                 <h4 class="font-bold text-lg mb-2">UMKM Desa Takmung</h4>
-                <p class="text-gray-300">Mendukung usaha lokal dan memajukan perekonomian masyarakat Desa Takmung.</p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-lg mb-2">Tautan Cepat</h4>
-                <ul class="text-gray-300 space-y-1">
-                    <li><a href="#" class="hover:text-red-400">Profil Desa</a></li>
-                    <li><a href="#" class="hover:text-red-400">Pemerintahan</a></li>
-                    <li><a href="#" class="hover:text-red-400">Peraturan</a></li>
-                    <li><a href="#" class="hover:text-red-400">Hubungi Kami</a></li>
-                </ul>
+                <p class="text-gray-300 max-w-2xl text-justify">
+                    Website ini merupakan platform resmi yang bertujuan untuk mendukung dan mempromosikan usaha mikro, kecil, dan menengah (UMKM) yang berasal dari Desa Takmung. Dengan menyediakan informasi lengkap mengenai produk, layanan, serta profil para pelaku UMKM lokal, kami berkomitmen untuk mendorong pertumbuhan ekonomi desa, memperluas jangkauan pasar, serta membangun kesadaran masyarakat akan pentingnya mendukung produk-produk lokal berkualitas.
+                </p>
             </div>
             <div>
                 <h4 class="font-semibold text-lg mb-2">Kontak</h4>
                 <ul class="text-gray-300 space-y-1">
-                    <li>📞 +62 361 xxx xxxx</li>
                     <li>✉️ info@desatakmung.id</li>
                     <li>📍 Desa Takmung, Klungkung, Bali</li>
                 </ul>

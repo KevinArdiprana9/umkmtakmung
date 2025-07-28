@@ -17,6 +17,7 @@ class Umkm extends Model
         'phone',
         'email',
         'owner',
+        'owner_photo',
         'operating_hours',
         'established',
         'employees'
