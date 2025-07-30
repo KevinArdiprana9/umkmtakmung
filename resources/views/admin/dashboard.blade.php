@@ -45,7 +45,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($umkmList as $umkm)
                 <div class="bg-white rounded-lg shadow-sm border hover:shadow-md transition overflow-hidden">
-                    <img src="{{ asset($umkm->image) }}" alt="{{ $umkm->name }}"
+                    <img src="{{ asset('public' . $umkm->image) }}" alt="{{ $umkm->name }}"
                         class="w-full h-40 object-cover">
                     <div class="p-4">
                         <span class="text-sm text-red-600 font-medium">{{ $umkm->category }}</span>

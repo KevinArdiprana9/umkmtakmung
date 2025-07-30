@@ -62,7 +62,9 @@
 
                     <div class="mt-4 {{ isset($umkm) ? '' : 'hidden' }}" id="main-preview-wrapper">
                         <p class="text-sm text-gray-500 mb-1">Preview:</p>
-                        <img id="main-preview" src="{{ $umkm->image ?? '#' }}" alt="Preview Foto Utama" class="w-64 h-48 object-cover rounded-lg border">
+                        <img id="main-preview" src="{{ isset($umkm->image) ? asset('public' . $umkm->image) : '#' }}"
+                            alt="Preview Foto Utama"
+                            class="w-64 h-48 object-cover rounded-lg border">
                     </div>
                 </div>
                 <div>
@@ -129,7 +131,7 @@
 
                         <div class="relative w-64" id="owner-photo-container">
                             <img id="owner-photo-preview"
-                                src="{{ isset($umkm) && $umkm->owner_photo ? $umkm->owner_photo : '#' }}"
+                                src="{{ isset($umkm->owner_photo) ? asset('public' . $umkm->owner_photo) : '#' }}"
                                 alt="Preview Foto Pemilik"
                                 class="w-64 h-48 object-cover rounded-lg border">
 
@@ -166,7 +168,7 @@
                     <div id="existing-gallery" class="mt-4 grid grid-cols-3 gap-3">
                         @foreach ($umkm->galleries as $gallery)
                         <div class="relative group">
-                            <img src="{{ $gallery->image_url }}" class="w-full h-32 object-cover rounded border">
+                            <img src="{{ asset('public' . $gallery->image_url) }}" class="w-full h-32 object-cover rounded border">
                             <button type="button"
                                 class="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-100 transition"
                                 onclick="hapusGambarLama('{{ $gallery->id }}', this)">❌</button>
