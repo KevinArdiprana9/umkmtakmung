@@ -39,6 +39,14 @@
     <div class="max-w-4xl mx-auto px-4 py-12 grid lg:grid-cols-3 gap-12">
         <div class="lg:col-span-2">
             <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- Hari Operasional -->
+                <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
+                    <div class="text-red-600 text-2xl mb-2">📅</div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Hari Operasional</h4>
+                    <p class="text-gray-800 text-sm">
+                        {{ !empty($umkm->operating_days) ? implode(', ', $umkm->operating_days) : 'Tidak tersedia' }}
+                    </p>
+                </div>
                 <!-- Jam Operasional -->
                 <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
                     <div class="text-red-600 text-2xl mb-2">⏰</div>

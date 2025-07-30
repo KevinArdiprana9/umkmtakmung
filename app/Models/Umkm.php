@@ -19,9 +19,14 @@ class Umkm extends Model
         'owner',
         'owner_photo',
         'operating_hours',
+        'operating_days',
         'established',
         'employees',
         'google_maps_link',
+    ];
+
+    protected $casts = [
+        'operating_days' => 'array',
     ];
 
     public function galleries()
