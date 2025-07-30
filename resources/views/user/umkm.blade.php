@@ -111,7 +111,7 @@
             </div>
         </div>
         <div class="border-t border-gray-700 text-center py-4 text-sm text-gray-400">
-            &copy; 2024 UMKM Desa Takmung. Hak cipta dilindungi.
+            &copy; 2025 UMKM Desa Takmung. Hak cipta dilindungi.
         </div>
     </footer>
 
