@@ -79,12 +79,18 @@ class UMKMController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image_file')) {
-            $imagePath = $request->file('image_file')->store('umkm/images', 'public');
+            $imageFile = $request->file('image_file');
+            $filename = uniqid() . '.' . $imageFile->getClientOriginalExtension();
+            $imageFile->move(public_path('upload/umkm/images'), $filename);
+            $imagePath = 'upload/umkm/images/' . $filename;
         }
+
         $ownerPhotoPath = null;
         if ($request->hasFile('owner_photo_file')) {
-            $file = $request->file('owner_photo_file');
-            $ownerPhotoPath = $file->store('umkm/owner_photos', 'public');
+            $ownerFile = $request->file('owner_photo_file');
+            $filename = uniqid() . '.' . $ownerFile->getClientOriginalExtension();
+            $ownerFile->move(public_path('upload/umkm/owner_photos'), $filename);
+            $ownerPhotoPath = 'upload/umkm/owner_photos/' . $filename;
         }
 
         $umkm = Umkm::create([
@@ -92,7 +98,7 @@ class UMKMController extends Controller
             'category' => $request->category,
             'description' => $request->description,
             'full_description' => $request->full_description,
-            'image' => $imagePath ? "/storage/" . $imagePath : null,
+            'image' => $imagePath,
             'location' => $request->location,
             'address' => $request->address,
             'phone' => $request->phone,
@@ -107,9 +113,10 @@ class UMKMController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $img) {
-                $path = $img->store('umkm/gallery', 'public');
+                $filename = uniqid() . '.' . $img->getClientOriginalExtension();
+                $img->move(public_path('upload/umkm/gallery'), $filename);
                 $umkm->galleries()->create([
-                    'image_url' => "/storage/" . $path
+                    'image_url' => 'upload/umkm/gallery/' . $filename
                 ]);
             }
         }
@@ -172,31 +179,36 @@ class UMKMController extends Controller
 
         $umkm = Umkm::with(['specialties', 'achievements', 'galleries'])->findOrFail($id);
 
-        // Update image utama jika ada
+        // Hapus image utama jika ada
         if ($request->hasFile('image_file')) {
-            // Hapus foto lama jika ada
-            if ($umkm->image && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->image))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->image));
+            if ($umkm->image && file_exists(public_path($umkm->image))) {
+                unlink(public_path($umkm->image));
             }
 
-            $imagePath = $request->file('image_file')->store('umkm/images', 'public');
-            $umkm->image = '/storage/' . $imagePath;
+            $imageFile = $request->file('image_file');
+            $filename = uniqid() . '.' . $imageFile->getClientOriginalExtension();
+            $imageFile->move(public_path('upload/umkm/images'), $filename);
+            $umkm->image = 'upload/umkm/images/' . $filename;
         }
 
+        // Hapus foto pemilik jika diminta
         if ($request->filled('hapus_owner_photo') && $request->hapus_owner_photo == '1') {
-            if ($umkm->owner_photo) {
-                Storage::delete(str_replace('/storage/', 'public/', $umkm->owner_photo));
-                $umkm->owner_photo = null;
+            if ($umkm->owner_photo && file_exists(public_path($umkm->owner_photo))) {
+                unlink(public_path($umkm->owner_photo));
             }
+            $umkm->owner_photo = null;
         }
 
+        // Ganti foto pemilik
         if ($request->hasFile('owner_photo_file')) {
-            if ($umkm->owner_photo && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->owner_photo))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->owner_photo));
+            if ($umkm->owner_photo && file_exists(public_path($umkm->owner_photo))) {
+                unlink(public_path($umkm->owner_photo));
             }
 
-            $ownerPhotoPath = $request->file('owner_photo_file')->store('umkm/owner_photos', 'public');
-            $umkm->owner_photo = '/storage/' . $ownerPhotoPath;
+            $ownerFile = $request->file('owner_photo_file');
+            $filename = uniqid() . '.' . $ownerFile->getClientOriginalExtension();
+            $ownerFile->move(public_path('upload/umkm/owner_photos'), $filename);
+            $umkm->owner_photo = 'upload/umkm/owner_photos/' . $filename;
         }
 
         $umkm->update([
@@ -233,20 +245,23 @@ class UMKMController extends Controller
             }
         }
 
+        // Tambah galeri baru
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $img) {
-                $path = $img->store('umkm/gallery', 'public');
+                $filename = uniqid() . '.' . $img->getClientOriginalExtension();
+                $img->move(public_path('upload/umkm/gallery'), $filename);
                 $umkm->galleries()->create([
-                    'image_url' => '/storage/' . $path,
+                    'image_url' => 'upload/umkm/gallery/' . $filename,
                 ]);
             }
         }
 
+        // Hapus gambar galeri
         if ($request->has('hapus_gambar')) {
             foreach ($request->hapus_gambar as $idGambar) {
                 $galeri = UmkmGallery::find($idGambar);
-                if ($galeri) {
-                    Storage::delete(str_replace('/storage/', 'public/', $galeri->image_url));
+                if ($galeri && file_exists(public_path($galeri->image_url))) {
+                    unlink(public_path($galeri->image_url));
                     $galeri->delete();
                 }
             }
@@ -259,24 +274,29 @@ class UMKMController extends Controller
     {
         $umkm = Umkm::with(['galleries', 'achievements', 'specialties'])->findOrFail($id);
 
-        if ($umkm->image && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->image))) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->image));
+        // Hapus image utama jika ada
+        if ($umkm->image && file_exists(public_path($umkm->image))) {
+            unlink(public_path($umkm->image));
         }
 
-        if ($umkm->owner_photo && Storage::disk('public')->exists(str_replace('/storage/', '', $umkm->owner_photo))) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $umkm->owner_photo));
+        // Hapus foto pemilik jika ada
+        if ($umkm->owner_photo && file_exists(public_path($umkm->owner_photo))) {
+            unlink(public_path($umkm->owner_photo));
         }
 
+        // Hapus semua gambar galeri
         foreach ($umkm->galleries as $galeri) {
-            if ($galeri->image_url && Storage::disk('public')->exists(str_replace('/storage/', '', $galeri->image_url))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $galeri->image_url));
+            if ($galeri->image_url && file_exists(public_path($galeri->image_url))) {
+                unlink(public_path($galeri->image_url));
             }
             $galeri->delete();
         }
 
+        // Hapus relasi
         $umkm->achievements()->delete();
         $umkm->specialties()->delete();
 
+        // Hapus data utama
         $umkm->delete();
 
         return redirect('/admin')->with('success', 'UMKM berhasil dihapus.');
