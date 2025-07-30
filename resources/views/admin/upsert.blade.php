@@ -93,25 +93,22 @@
                     <label class="block font-medium mb-1">Nama Pemilik</label>
                     <input type="text" name="owner" class="w-full border p-2 rounded" value="{{ old('owner', $umkm->owner ?? '') }}">
                 </div>
+                @php
+                $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                $selectedDays = old('operating_days', $umkm->operating_days ?? []);
+                @endphp
                 <div class="md:col-span-2">
-                    <label for="operating_days" class="block font-medium mb-2">Hari Operasional</label>
-                    @php
-                    $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-                    $selectedDays = old('operating_days', $umkm->operating_days ?? []);
-                    @endphp
-                    <div class="flex flex-wrap gap-2">
+                    <label class="block font-medium mb-2">Hari Operasional</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         @foreach ($days as $day)
-                        <label class="flex items-center">
+                        <label class="inline-flex items-center space-x-2 bg-white border border-gray-300 px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-50">
                             <input
                                 type="checkbox"
                                 name="operating_days[]"
                                 value="{{ $day }}"
-                                class="hidden peer"
+                                class="form-checkbox text-red-600"
                                 {{ in_array($day, $selectedDays) ? 'checked' : '' }}>
-                            <span
-                                class="peer-checked:bg-red-600 peer-checked:text-white bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 cursor-pointer transition">
-                                {{ $day }}
-                            </span>
+                            <span>{{ $day }}</span>
                         </label>
                         @endforeach
                     </div>
