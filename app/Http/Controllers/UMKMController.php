@@ -7,8 +7,6 @@ use Illuminate\Support\Str;
 use App\Models\UMKM;
 use Illuminate\Support\Facades\Storage;
 use App\Models\UmkmGallery;
-use App\Models\UmkmAchievement;
-use App\Models\UmkmSpecialty;
 
 class UMKMController extends Controller
 {
@@ -76,6 +74,7 @@ class UMKMController extends Controller
             'image_file' => 'nullable|image|max:2048',
             'owner_photo_file' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'gallery.*' => 'nullable|image|max:2048',
+            'google_maps_link' => 'nullable|string|url',
         ]);
 
         $imagePath = null;
@@ -103,6 +102,7 @@ class UMKMController extends Controller
             'operating_hours' => $request->operating_start . ' - ' . $request->operating_end,
             'established' => $request->established,
             'employees' => $request->employees,
+            'google_maps_link' => $request->google_maps_link,
         ]);
 
         if ($request->hasFile('gallery')) {
@@ -167,6 +167,7 @@ class UMKMController extends Controller
             'image_file' => 'nullable|image|max:2048',
             'owner_photo_file' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'gallery.*' => 'nullable|image|max:2048',
+            'google_maps_link' => 'nullable|string|url',
         ]);
 
         $umkm = Umkm::with(['specialties', 'achievements', 'galleries'])->findOrFail($id);
@@ -211,6 +212,7 @@ class UMKMController extends Controller
             'operating_hours' => $request->operating_start . ' - ' . $request->operating_end,
             'established' => $request->established,
             'employees' => $request->employees,
+            'google_maps_link' => $request->google_maps_link
         ]);
 
         $umkm->specialties()->delete();

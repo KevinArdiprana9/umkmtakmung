@@ -20,7 +20,8 @@ class Umkm extends Model
         'owner_photo',
         'operating_hours',
         'established',
-        'employees'
+        'employees',
+        'google_maps_link',
     ];
 
     public function galleries()

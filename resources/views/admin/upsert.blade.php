@@ -73,6 +73,12 @@
                     <label class="block font-medium mb-1">Alamat Lengkap</label>
                     <input type="text" name="address" class="w-full border p-2 rounded" required value="{{ old('address', $umkm->address ?? '') }}">
                 </div>
+                <div class="md:col-span-2">
+                    <label class="block font-medium mb-1">Link Google Maps (opsional)</label>
+                    <input type="text" name="google_maps_link" class="w-full border p-2 rounded"
+                        value="{{ old('google_maps_link', $umkm->google_maps_link ?? '') }}"
+                        placeholder="https://goo.gl/maps/...">
+                </div>
                 <div>
                     <label class="block font-medium mb-1">No. Telepon</label>
                     <input type="text" name="phone" class="w-full border p-2 rounded" required value="{{ old('phone', $umkm->phone ?? '') }}">

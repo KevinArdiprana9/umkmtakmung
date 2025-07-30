@@ -140,10 +140,12 @@
                 <ul class="space-y-4 text-sm text-gray-700">
                     <li><strong>Alamat:</strong> {{ $umkm->address }}
                         <p></p>
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($umkm->address) }}"
-                            target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                        @if ($umkm->google_maps_link)
+                        <a href="{{ $umkm->google_maps_link }}" target="_blank"
+                            class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                             📍 Lihat di Google Maps
                         </a>
+                        @endif
                         <iframe
                             width="100%" height="200"
                             style="border:0; border-radius: 0.5rem"
