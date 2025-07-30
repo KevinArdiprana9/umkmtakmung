@@ -94,18 +94,23 @@
                     <input type="text" name="owner" class="w-full border p-2 rounded" value="{{ old('owner', $umkm->owner ?? '') }}">
                 </div>
                 <div class="md:col-span-2">
-                    <label for="operating_days" class="block font-medium mb-1">Hari Operasional</label>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                        @php
-                        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-                        $selectedDays = old('operating_days', $umkm->operating_days ?? []);
-                        @endphp
+                    <label for="operating_days" class="block font-medium mb-2">Hari Operasional</label>
+                    @php
+                    $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                    $selectedDays = old('operating_days', $umkm->operating_days ?? []);
+                    @endphp
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                         @foreach ($days as $day)
-                        <label class="inline-flex items-center space-x-2">
-                            <input type="checkbox" name="operating_days[]" value="{{ $day }}"
-                                {{ in_array($day, $selectedDays) ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-red-600 focus:ring-red-500">
-                            <span>{{ $day }}</span>
+                        <label
+                            class="cursor-pointer rounded-lg border px-4 py-2 text-center font-medium transition
+                   {{ in_array($day, $selectedDays) ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-red-50' }}">
+                            <input
+                                type="checkbox"
+                                name="operating_days[]"
+                                value="{{ $day }}"
+                                class="sr-only"
+                                {{ in_array($day, $selectedDays) ? 'checked' : '' }}>
+                            {{ $day }}
                         </label>
                         @endforeach
                     </div>
