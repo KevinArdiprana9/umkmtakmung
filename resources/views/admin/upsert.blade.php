@@ -106,7 +106,7 @@
                                 type="checkbox"
                                 name="operating_days[]"
                                 value="{{ $day }}"
-                                class="sr-only peer"
+                                class="peer appearance-none absolute"
                                 {{ in_array($day, $selectedDays) ? 'checked' : '' }}>
                             <span
                                 class="peer-checked:bg-red-600 peer-checked:text-white bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 cursor-pointer transition select-none">
