@@ -182,7 +182,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m5 4v4m0 0h4m-4 0H9" />
                         </svg>
-                        <span class="text-sm text-gray-600">Klik untuk memilih gambar baru</span>
+                        <span class="text-sm text-gray-600">Klik atau drag and drop ke sini untuk unggah gambar baru</span>
                         <input type="file" name="gallery[]" accept="image/*" multiple
                             class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                             onchange="previewGallery(event)">
