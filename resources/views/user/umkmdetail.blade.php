@@ -16,7 +16,7 @@
 
     <div class="relative">
         <div class="h-96 overflow-hidden relative">
-            <img src="{{ $umkm->image }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover" />
+            <img src="{{ asset('public/' . $umkm->image) }}" alt="{{ $umkm->name }}" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
             <div class="absolute bottom-0 left-0 right-0 p-8">
@@ -86,8 +86,8 @@
                 <h2 class="text-2xl font-bold text-gray-900 mb-3">Galeri</h2>
                 <div class="grid md:grid-cols-3 gap-4">
                     @foreach ($umkm->galleries->pluck('image_url') as $img)
-                    <div class="aspect-w-5 aspect-h-4 overflow-hidden rounded-lg cursor-pointer" @click="show = true; imgSrc = '{{ $img }}'">
-                        <img src="{{ $img }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                    <div class="aspect-w-5 aspect-h-4 overflow-hidden rounded-lg cursor-pointer" @click="show = true; imgSrc = '{{ asset('public/' . $img) }}'">
+                        <img src="{{ asset('public/' . $img) }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                     </div>
                     @endforeach
                 </div>
@@ -167,7 +167,7 @@
                         <strong class="text-gray-800 text-sm mb-2">Pemilik: </strong> {{ $umkm->owner }}
 
                         @if ($umkm->owner_photo)
-                        <img src="{{ $umkm->owner_photo }}"
+                        <img src="{{ asset('public/' . $umkm->owner_photo) }}"
                             alt="Foto Pemilik"
                             class="w-32 h-32 object-cover rounded-lg border shadow mt-4">
                         @endif
@@ -190,8 +190,7 @@
             <div>
                 <h4 class="font-semibold text-lg mb-2">Kontak</h4>
                 <ul class="text-gray-300 space-y-1">
-                    <li>📞 +62 361 xxx xxxx</li>
-                    <li>✉️ info@desatakmung.id</li>
+                    <li>✉️ takmungwebsite@gmail.com</li>
                     <li>📍 Desa Takmung, Klungkung, Bali</li>
                 </ul>
             </div>

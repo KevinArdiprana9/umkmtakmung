@@ -70,7 +70,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach ($umkmList as $umkm)
             <div class="bg-white border rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden group">
-                <img src="{{ $umkm->image }}" alt="{{ $umkm->name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                <img src="{{ asset('public/' . $umkm->image) }}" alt="{{ $umkm->name }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                 <div class="p-6">
                     <div class="flex justify-between mb-3 text-sm">
                         <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs">{{ $umkm['category'] }}</span>
@@ -105,7 +105,7 @@
             <div>
                 <h4 class="font-semibold text-lg mb-2">Kontak</h4>
                 <ul class="text-gray-300 space-y-1">
-                    <li>✉️ info@desatakmung.id</li>
+                    <li>✉️ takmungwebsite@gmail.com</li>
                     <li>📍 Desa Takmung, Klungkung, Bali</li>
                 </ul>
             </div>
