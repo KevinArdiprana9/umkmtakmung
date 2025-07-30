@@ -99,18 +99,19 @@
                     $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
                     $selectedDays = old('operating_days', $umkm->operating_days ?? []);
                     @endphp
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="flex flex-wrap gap-2">
                         @foreach ($days as $day)
-                        <label
-                            class="cursor-pointer rounded-lg border px-4 py-2 text-center font-medium transition
-                   {{ in_array($day, $selectedDays) ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-red-50' }}">
+                        <label class="flex items-center">
                             <input
                                 type="checkbox"
                                 name="operating_days[]"
                                 value="{{ $day }}"
-                                class="sr-only"
+                                class="hidden peer"
                                 {{ in_array($day, $selectedDays) ? 'checked' : '' }}>
-                            {{ $day }}
+                            <span
+                                class="peer-checked:bg-red-600 peer-checked:text-white bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 cursor-pointer transition">
+                                {{ $day }}
+                            </span>
                         </label>
                         @endforeach
                     </div>
