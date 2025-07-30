@@ -101,15 +101,15 @@
                     @endphp
                     <div class="flex flex-wrap gap-2">
                         @foreach ($days as $day)
-                        <label class="flex items-center cursor-pointer">
+                        <label class="relative">
                             <input
                                 type="checkbox"
                                 name="operating_days[]"
                                 value="{{ $day }}"
-                                class="peer sr-only"
+                                class="peer appearance-none absolute inset-0 z-10 cursor-pointer"
                                 {{ in_array($day, $selectedDays) ? 'checked' : '' }}>
                             <span
-                                class="peer-checked:bg-red-600 peer-checked:text-white bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 transition select-none">
+                                class="peer-checked:bg-red-600 peer-checked:text-white bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 transition select-none inline-block w-full text-center">
                                 {{ $day }}
                             </span>
                         </label>
