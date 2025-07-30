@@ -7,6 +7,7 @@
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="bg-gray-100 min-h-screen py-10 px-4">
@@ -94,26 +95,25 @@
                     <input type="text" name="owner" class="w-full border p-2 rounded" value="{{ old('owner', $umkm->owner ?? '') }}">
                 </div>
                 <div class="md:col-span-2">
-                    <label for="operating_days" class="block font-medium mb-2">Hari Operasional</label>
+                    <label class="block font-medium mb-2">Hari Operasional</label>
                     @php
                     $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
                     $selectedDays = old('operating_days', $umkm->operating_days ?? []);
                     @endphp
                     <div class="flex flex-wrap gap-2">
                         @foreach ($days as $day)
-                        <label class="cursor-pointer relative inline-block">
-                            <input
-                                type="checkbox"
-                                name="operating_days[]"
-                                value="{{ $day }}"
-                                class="absolute w-0 h-0 opacity-0 peer"
-                                {{ in_array($day, $selectedDays) ? 'checked' : '' }}>
-                            <span class="inline-block px-4 py-2 rounded-lg border border-gray-300
-            text-sm text-gray-700 bg-white transition
-            peer-checked:bg-red-600 peer-checked:text-white">
+                        <div x-data="{ checked: {{ in_array($day, $selectedDays) ? 'true' : 'false' }} }">
+                            <label
+                                class="px-4 py-2 rounded-lg border text-sm cursor-pointer transition"
+                                :class="checked ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700 border-gray-300'">
+                                <input type="checkbox"
+                                    name="operating_days[]"
+                                    value="{{ $day }}"
+                                    x-model="checked"
+                                    class="hidden">
                                 {{ $day }}
-                            </span>
-                        </label>
+                            </label>
+                        </div>
                         @endforeach
                     </div>
                 </div>
