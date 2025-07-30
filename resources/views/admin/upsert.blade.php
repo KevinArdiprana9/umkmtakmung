@@ -98,7 +98,9 @@
                     <label class="block font-medium mb-2">Hari Operasional</label>
                     @php
                     $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-                    $selectedDays = old('operating_days', $umkm->operating_days ?? []);
+
+                    $selected = old('operating_days') ?? ($umkm->operating_days ?? []);
+                    $selectedDays = is_array($selected) ? $selected : [$selected];
                     @endphp
                     <div class="flex flex-wrap gap-2">
                         @foreach ($days as $day)
@@ -117,6 +119,7 @@
                         @endforeach
                     </div>
                 </div>
+
                 <div>
                     <label class="block font-medium mb-1">Jam Operasional</label>
                     <div class="flex items-center gap-2">
