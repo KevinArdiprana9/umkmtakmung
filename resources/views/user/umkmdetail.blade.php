@@ -39,19 +39,46 @@
     <div class="max-w-4xl mx-auto px-4 py-12 grid lg:grid-cols-3 gap-12">
         <div class="lg:col-span-2">
             <div class="grid md:grid-cols-3 gap-6 mb-8">
-                <!-- Hari Operasional -->
+                @php
+                function formatOperatingDays($days) {
+                $order = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                $indexes = array_map(fn($day) => array_search($day, $order), $days);
+                sort($indexes);
+
+                $grouped = [];
+                $start = $prev = $indexes[0] ?? null;
+
+                foreach ($indexes as $i => $index) {
+                if ($i === 0) continue;
+                if ($index !== $prev + 1) {
+                $grouped[] = [$start, $prev];
+                $start = $index;
+                }
+                $prev = $index;
+                }
+                if ($start !== null) $grouped[] = [$start, $prev];
+
+                return implode(', ', array_map(function ($range) use ($order) {
+                return $range[0] === $range[1]
+                ? $order[$range[0]]
+                : $order[$range[0]] . '–' . $order[$range[1]];
+                }, $grouped));
+                }
+
+                $days = $umkm->operating_days ?? [];
+                $hours = $umkm->operating_hours ?? null;
+                @endphp
+
                 <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
-                    <div class="text-red-600 text-2xl mb-2">📅</div>
-                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Hari Operasional</h4>
+                    <div class="text-red-600 text-2xl mb-2">🕘</div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Jadwal Operasional</h4>
                     <p class="text-gray-800 text-sm">
-                        {{ !empty($umkm->operating_days) ? implode(', ', $umkm->operating_days) : 'Tidak tersedia' }}
+                        @if (!empty($days) && !empty($hours))
+                        {{ formatOperatingDays($days) }}, {{ $hours }} WITA
+                        @else
+                        Tidak tersedia
+                        @endif
                     </p>
-                </div>
-                <!-- Jam Operasional -->
-                <div class="bg-white shadow-sm rounded-xl p-5 border text-center">
-                    <div class="text-red-600 text-2xl mb-2">⏰</div>
-                    <h4 class="text-sm font-semibold text-gray-700 mb-1">Jam Operasional</h4>
-                    <p class="text-gray-800 text-sm">{{ $umkm->operating_hours }} WITA</p>
                 </div>
 
                 <!-- Tim -->
