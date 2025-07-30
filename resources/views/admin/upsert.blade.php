@@ -36,7 +36,7 @@
                     <label class="block font-medium mb-1">Kategori</label>
                     <select name="category" class="w-full border p-2 rounded" required>
                         <option value="" disabled {{ isset($umkm) ? '' : 'selected' }}>Pilih kategori UMKM</option>
-                        @foreach (["Makanan & Minuman", "Kerajinan Tangan", "Fashion", "Perlengkapan Persembahyangan", "Pertanian", "Peternakan", "Perikanan", "Jasa", "Lainnya"] as $cat)
+                        @foreach (["Makanan & Minuman", "Kerajinan Tangan", "Fashion", "Perlengkapan Persembahyangan", "Pertanian", "Peternakan", "Perikanan", "Jasa", "Perawatan Hewan", "Lainnya"] as $cat)
                         <option value="{{ $cat }}" {{ old('category', $umkm->category ?? '') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                         @endforeach
                     </select>
